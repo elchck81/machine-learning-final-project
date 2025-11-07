@@ -1,0 +1,15 @@
+{
+ "argv": [
+  "/workspaces/machine-learning-final-project/venv/bin/python",
+  "-Xfrozen_modules=off",
+  "-m",
+  "ipykernel_launcher",
+  "-f",
+  "{connection_file}"
+ ],
+ "display_name": "Python (mlfp-venv)",
+ "language": "python",
+ "metadata": {
+  "debugger": true
+ }
+}
