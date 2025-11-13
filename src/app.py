@@ -1,9 +1,10 @@
 import streamlit as st
 import pandas as pd
 import pickle
+import os
 
 def load_model():
-    with open ("../models/bike_sharing.pkl", "rb") as file:
+    with open (os.path.dirname(__file__)+"/../models/bike_sharing.pkl", "rb") as file:
         artifact = pickle.load(file)
 
     return artifact
@@ -30,11 +31,15 @@ with col1:
     season_label = st.selectbox("Estacióndel año", list(season_map.keys()))
     hr = st.slider("Hora del día",0,23,8)
     temp_c = st.number_input("Temperatura (°C)", -10.0, 40.0, 20.0)
+    atemp_c = st.number_input("Sensación térmica (°C)", -10.0, 50.0, 20.0)
+
 
 with col2:
     hum_pct = st.slider("Humedad relativa(%)", 0, 100, 60)
     windspeed_kmh = st.slider("Velocidad del viento (km/h)", 0.0, 70.0, 10.0)
     weathersit_label = st.selectbox("Condición climática", list(weathersit_map.keys()))
+    cnt_delayed = st.slider("Bicicletas alquiladas hace 1 semana", 0.0, 1000.0, 150.0)
+
 
 holiday = st.checkbox("¿Es feriado?", value=False)
 workingday = st.checkbox("¿Es día laboral? (ni fin de semana ni feriado)", value=True)
@@ -49,18 +54,23 @@ input_dict= {
     "season": season_map[season_label],
     "hr": hr,
     "temp": temp_c,
+    "atemp": atemp_c,
     "hum": hum_pct,
     "windspeed": windspeed_kmh,
     "weathersit": weathersit_map[weathersit_label],
     "holiday": int(holiday),
     "workingday": int(workingday),
     "weekday": weekday,
-
-
-
+    'cnt_lagged_week':cnt_delayed
 }
 
+
 input_df = pd.DataFrame([input_dict])
+input_df['holiday'] = input_df['holiday'].map(lambda x: "No" if x == 0 else "Si")
+input_df['holiday'] = input_df['holiday'].astype('category')
+input_df['workingday'] = input_df['workingday'].map(lambda x: "No" if x == 0 else "Si")
+input_df['workingday'] = input_df['workingday'].astype('category')
+input_df['weathersit'] = input_df['weathersit'].astype('category')
 
 st.write("### Datos de entrada al modelo")
 st.dataframe(input_df)
