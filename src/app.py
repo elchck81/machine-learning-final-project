@@ -4,7 +4,7 @@ import pickle
 import os
 
 def load_model():
-    with open (os.path.dirname(__file__)+"/../models/bike_sharing.pkl", "rb") as file:
+    with open ("../models/bike_sharing.pkl", "rb") as file:
         artifact = pickle.load(file)
 
     return artifact
